@@ -1,17 +1,22 @@
-import telegram 
+import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 import logging
 from token_data import token_value as tv
 
 
+# flag = False
 def help(update, context):
+    #    logging.info(update)
+    #    logging.info(context)
     text_send = 'To create your timetable, write "/reg NAME".\nTo see your timetable, write /tt.'
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_send)
 
 
-def reg(update, context):
-    get_name(update, context)
-    #    text_send = "Write /fn YOUR_FIRST_NAME"
+#    echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
+#    dispatcher.add_handler(echo_handler)
+
+#   echo()
+#    text_send = "Write /fn YOUR_FIRST_NAME"
 #    print(context)
 #    name = context.args[0]
 #    if name is None:
@@ -20,21 +25,18 @@ def reg(update, context):
 #        text_send = ''
 #    print(name)
 
+# def name
+
 
 def get_name(update, context):
-    text_send = "Write command name:"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=text_send)
-
-    
-
-def echo(update, context):
-    text_send = "Write /help, plz"
+    text_send = "Write name:"
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_send)
 
 
 def timetable(update, context):
     text_send = 'Here will be your timetable'
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_send)
+
 
 """
 def button(update, context):
@@ -52,33 +54,52 @@ def button(update, context):
 """
 
 
-token = tv()
-bot = telegram.Bot(token=token)
+class Bot:
+    def __init__(self):
+        self.flag = False
+        token = tv()
+        bot = telegram.Bot(token=token)
 
-updater = Updater(token=token, use_context=True)
-dispatcher = updater.dispatcher
+        updater = Updater(token=token, use_context=True)
+        dispatcher = updater.dispatcher
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
-updater.start_polling()
+        logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+        logger = logging.getLogger(__name__)
 
-############################ HANDLERS ##############################
+        updater.start_polling()
 
-help_handler = CommandHandler('help', help)
-dispatcher.add_handler(help_handler)
+        ############################ HANDLERS ##############################
 
-registration_handler = CommandHandler('reg', reg)
-dispatcher.add_handler(registration_handler)
+        help_handler = CommandHandler('help', help)
+        dispatcher.add_handler(help_handler)
 
-echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
-dispatcher.add_handler(echo_handler)
+        registration_handler = CommandHandler('reg', self.reg)
+        dispatcher.add_handler(registration_handler)
 
-timetable_handler = CommandHandler('timetable', timetable)
-dispatcher.add_handler(timetable_handler)
+        echo_handler = MessageHandler(Filters.text & (~Filters.command), self.echo)
+        dispatcher.add_handler(echo_handler)
 
-tt_handler = CommandHandler('tt', timetable)
-dispatcher.add_handler(tt_handler)
+        timetable_handler = CommandHandler('timetable', timetable)
+        dispatcher.add_handler(timetable_handler)
 
-#button_handler = CallbackQueryHandler(button)
-#dispatcher.add_handler(button_handler)
-############################ HANDLERS ##############################
+        tt_handler = CommandHandler('tt', timetable)
+        dispatcher.add_handler(tt_handler)
+
+        # button_handler = CallbackQueryHandler(button)
+        # dispatcher.add_handler(button_handler)
+        ############################ HANDLERS ##############################
+
+    def reg(self, update, context):
+        get_name(update, context)
+        #    updater = Updater(token=token, use_context=True)
+        self.flag = True
+
+    def echo(self, update, context):
+        if self.flag:
+            text_send = "Write /help, plz"
+        else:
+            text_send = "loh"
+        context.bot.send_message(chat_id=update.effective_chat.id, text=text_send)
+
+
+Bot()
